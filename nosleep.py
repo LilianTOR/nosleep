@@ -1,6 +1,19 @@
 import time, pyautogui
+import sys, os
 import PySimpleGUI as sg
 import multiprocessing
+from contextlib import contextmanager
+
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:  
+            yield
+        finally:
+            sys.stdout = old_stdout
 
 
 def KeepUI():
@@ -30,5 +43,6 @@ def dontsleep():
 
 
 if __name__ == '__main__':
-    p1 = multiprocessing.Process(target = KeepUI)
-    p1.start()
+    with suppress_stdout():
+        p1 = multiprocessing.Process(target = KeepUI)
+        p1.start()
